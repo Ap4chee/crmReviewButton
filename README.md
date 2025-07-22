@@ -1,15 +1,26 @@
-jak uruchomic:
+# 📌 Projekt Laravel + Inertia + TypeScript
 
-u klienta musi byc:
+## 🔧 Instalacja i uruchomienie
 
-`<script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/dist/dom-to-image.min.js"></script>
+```bash
+git clone https://github.com/Ap4chee/crmReviewButton
+cd twojerepo
 
+composer install
+npm install
 
-<script src="screenshotv3.js"></script>`
+cp .env.example .env
+# Ustaw w .env dane bazy:
+# DB_DATABASE=twojabaza
+# DB_USERNAME=root
+# DB_PASSWORD=
 
-komendy do uruchmienia:
-    composer install
-    npm install
-ustawic env
-    php artisan key:generate
-    php artisan migrate
+php artisan key:generate
+php artisan migrate
+
+# Uruchomienie serwera Laravel:
+php artisan serve
+# Domyślnie: http://127.0.0.1:8000
+
+# Uruchomienie frontendu (Inertia/React/TypeScript):
+npm run dev
