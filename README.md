@@ -1,4 +1,4 @@
-# 📌 Projekt Laravel + Inertia + TypeScript
+# Skrypt który ma być na stronie klienta: https://github.com/Ap4chee/crmReviewButton/blob/main/resources/js/ScreenshotScript.js
 
 ## 🔧 Instalacja i uruchomienie
 
