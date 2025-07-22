@@ -1,4 +1,4 @@
-# Skrypt który ma być na stronie klienta: https://github.com/Ap4chee/crmReviewButton/blob/main/resources/js/ScreenshotScript.js
+# Skrypt który ma być na stronie klienta: [https://github.com/Ap4chee/crmReviewButton/blob/main/resources/js/ScreenshotScript.js](link)
 
 ## 🔧 Instalacja i uruchomienie
 
