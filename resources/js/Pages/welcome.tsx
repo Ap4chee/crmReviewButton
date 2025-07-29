@@ -4,7 +4,7 @@ import CrmReviewModal from "@/Components/CrmReviewWindow"
 
 export default function Page() {
   // z dazy banych url klienta 
-  const clientWebsiteUrl = "https://darkorange-sardine-923872.hostingersite.com"
+  const clientWebsiteUrl = "https://darkorange-sardine-923872.hostingersite.com/"
 
   const handleReviewSaved = (data: any) => {
     console.log("Review data saved on parent component:", data)
