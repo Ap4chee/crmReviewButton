@@ -32,7 +32,7 @@
         style.id = "v0-review-styles";
         style.innerHTML = `
             .v0-review-overlay { 
-                position: absolute; 
+                position: fixed; 
                 top: 0; 
                 left: 0; 
                 width: 100%; 
@@ -92,6 +92,7 @@
     const handleMouseDown = (e) => {
         if (e.button !== 0) return;
 
+        // Najpierw sprawdź, czy kliknięto na istniejący prostokąt
         const clickedRect = rectangles.find((rect) => {
             return (
                 e.pageX >= rect.x &&
@@ -108,7 +109,7 @@
             return;
         }
 
-        // Jeśli nie jest w trybie rysowania, nie rób nic, mozna usunac
+        // Jeśli nie jest w trybie rysowania, nie rób nic
         if (!isDrawingModeEnabled) return;
 
         const y = e.pageY;
@@ -142,13 +143,28 @@
         }
     };
 
+    // Funkcja obliczająca procentowe wartości dla prostokąta
+    const calculatePercentages = (rect) => {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        return {
+            ...rect,
+            xPercent: (rect.x / viewportWidth) * 100,
+            yPercent: (rect.y / viewportHeight) * 100,
+            widthPercent: (rect.width / viewportWidth) * 100,
+            heightPercent: (rect.height / viewportHeight) * 100
+        };
+    };
+
     const handleMouseUp = () => {
         if (!isDrawing || !currentRectangle || !startPoint) return;
 
         const { x, y, width, height } = currentRectangle;
 
         if (width > 10 && height > 10) {
-            const newRectangle = {
+            // Twórz prostokąt z wartościami pikseli i procentów
+            const newRectangle = calculatePercentages({
                 id: generateUUID(),
                 x,
                 y,
@@ -156,7 +172,8 @@
                 height,
                 comment: "",
                 index: rectangles.length + 1,
-            };
+            });
+            
             rectangles.push(newRectangle);
             renderRectangles();
             notifyParentRectanglesUpdated();
@@ -171,6 +188,14 @@
         tempRectDiv = null;
     };
 
+    // Funkcja upewniająca się, że prostokąt ma wartości procentowe
+    const ensureRectHasPercentages = (rect) => {
+        if (rect.xPercent === undefined) {
+            return calculatePercentages(rect);
+        }
+        return rect;
+    };
+
     const renderRectangles = () => {
         Array.from(
             reviewOverlay.querySelectorAll(
@@ -179,20 +204,36 @@
         ).forEach((el) => el.remove());
 
         rectangles.forEach((rect) => {
+            // Upewnij się, że prostokąt ma wartości procentowe
+            const rectWithPercent = ensureRectHasPercentages(rect);
+            
             const rectDiv = document.createElement("div");
             rectDiv.className = "v0-review-rectangle";
-            rectDiv.dataset.rectangleId = rect.id;
-            rectDiv.style.left = `${rect.x}px`;
-            rectDiv.style.top = `${rect.y}px`;
-            rectDiv.style.width = `${rect.width}px`;
-            rectDiv.style.height = `${rect.height}px`;
+            rectDiv.dataset.rectangleId = rectWithPercent.id;
+            
+            // Użyj wartości procentowych do pozycjonowania
+            rectDiv.style.left = `${rectWithPercent.xPercent}%`;
+            rectDiv.style.top = `${rectWithPercent.yPercent}%`;
+            rectDiv.style.width = `${rectWithPercent.widthPercent}%`;
+            rectDiv.style.height = `${rectWithPercent.heightPercent}%`;
+            
             reviewOverlay.appendChild(rectDiv);
+            
+            // Etykieta również z wartościami procentowymi
             const label = document.createElement("div");
             label.className = "v0-review-label";
-            label.textContent = rect.index ?? "";
-            label.style.left = `${rect.x + 3}px`;
-            label.style.top = `${rect.y + 3}px`;
+            label.textContent = rectWithPercent.index ?? "";
+            label.style.left = `calc(${rectWithPercent.xPercent}% + 3px)`;
+            label.style.top = `calc(${rectWithPercent.yPercent}% + 3px)`;
+            
             reviewOverlay.appendChild(label);
+            
+            // Dodaj listener do prostokąta, aby reagował na kliknięcia
+            rectDiv.addEventListener("click", (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                createCommentBox(rectWithPercent);
+            });
         });
     };
 
@@ -273,18 +314,23 @@
         textarea.dataset.commentBox = "true";
         textarea.dataset.rectId = rect.id;
 
+        // Oblicz pozycję pola komentarza w pikselach na podstawie procentów
+        const rect_x = rect.x || (rect.xPercent * window.innerWidth / 100);
+        const rect_y = rect.y || (rect.yPercent * window.innerHeight / 100);
+        const rect_width = rect.width || (rect.widthPercent * window.innerWidth / 100);
+        
         const margin = 5;
         const widthNum = 200;
         const heightNum = 80;
 
         let left = Math.min(
-            rect.x + rect.width + margin,
+            rect_x + rect_width + margin,
             window.innerWidth - widthNum - margin
         );
         left = Math.max(margin, left);
 
         let top = Math.min(
-            rect.y + margin,
+            rect_y + margin,
             window.innerHeight - heightNum - margin
         );
         top = Math.max(margin, top);
@@ -485,8 +531,9 @@
             );
 
             if (Array.isArray(event.data.payload?.rectangles)) {
+                // Zapewnij, że każdy prostokąt ma wartości procentowe
                 rectangles = event.data.payload.rectangles.map((rect, idx) => ({
-                    ...rect,
+                    ...ensureRectHasPercentages(rect),
                     id: rect.id || generateUUID(), 
                     index: rect.index || (idx + 1),
                 }));
