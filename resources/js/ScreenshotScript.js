@@ -32,11 +32,6 @@
         style.id = "v0-review-styles";
         style.innerHTML = `
             .v0-review-overlay { 
-                position: absolute; 
-                top: 0; 
-                left: 0; 
-                width: 100%; 
-                height: 100%; 
                 z-index: 9999; 
                 cursor: crosshair; 
             }
@@ -86,6 +81,11 @@
         reviewOverlay.className = `v0-review-overlay ${
             isDrawingModeEnabled ? "enabled" : "disabled"
         }`;
+        reviewOverlay.style.position = "absolute";
+        reviewOverlay.style.top = "0px";
+        reviewOverlay.style.left = "0px";
+        reviewOverlay.style.width = `${document.documentElement.scrollWidth}px`; // stała szerokość
+        reviewOverlay.style.height = `${document.documentElement.scrollHeight}px`; // pełna wysokość dokumentu
         document.body.appendChild(reviewOverlay);
     };
 
@@ -279,15 +279,15 @@
 
         let left = Math.min(
             rect.x + rect.width + margin,
-            window.innerWidth - widthNum - margin
+            window.scrollX + window.innerWidth - widthNum - margin
         );
-        left = Math.max(margin, left);
+        left = Math.max(window.scrollX + margin, left);
 
         let top = Math.min(
             rect.y + margin,
-            window.innerHeight - heightNum - margin
+            window.scrollY + window.innerHeight - heightNum - margin
         );
-        top = Math.max(margin, top);
+        top = Math.max(window.scrollY + margin, top);
 
         textarea.style.left = `${left}px`;
         textarea.style.top = `${top}px`;
@@ -487,8 +487,8 @@
             if (Array.isArray(event.data.payload?.rectangles)) {
                 rectangles = event.data.payload.rectangles.map((rect, idx) => ({
                     ...rect,
-                    id: rect.id || generateUUID(), 
-                    index: rect.index || (idx + 1),
+                    id: rect.id || generateUUID(),
+                    index: rect.index || idx + 1,
                 }));
 
                 console.log("📋 Loaded rectangles:", rectangles.length);

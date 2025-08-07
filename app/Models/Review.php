@@ -13,9 +13,11 @@ class Review extends Model
         'client_website',
         'screenshot_path',
         'rectangles',
+        'iframe_width',
     ];
 
     protected $casts = [
-        'rectangles' => 'array', 
+        'rectangles' => 'array',
+        'iframe_width' => 'integer',
     ];
 }

@@ -45,9 +45,7 @@ export default function ReviewModal({
                     <div
                         className="h-full"
                         style={{
-                            minWidth:
-                                initialWidth > 0 ? `${initialWidth}px` : "100%",
-                            width: "100%",
+                            width: `${initialWidth}px`,
                         }}
                     >
                         {iframeSrc ? (
@@ -71,6 +69,7 @@ export default function ReviewModal({
                     onReviewSaved={onReviewSaved}
                     onClose={onClose}
                     initialRectangles={initialRectangles}
+                    iframeWidth={initialWidth}
                 />
             </div>
         </div>

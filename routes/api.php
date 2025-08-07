@@ -11,6 +11,7 @@ Route::post('/reviews', function (Request $request) {
         'rectangles' => 'nullable|array',
         'pageUrl' => 'required|string',
         'timestamp' => 'required|date',
+        'iframeWidth' => 'nullable|integer',
     ]);
 
 
@@ -22,6 +23,7 @@ Route::post('/reviews', function (Request $request) {
         'client_website' => $validated['pageUrl'],
         'screenshot_path' => Storage::url($filename),
         'rectangles' => $validated['rectangles'] ?? [],
+        'iframe_width' => $validated['iframeWidth'] ?? null, 
     ]);
 
     return response()->json([
@@ -75,5 +77,6 @@ Route::get('/reviews/latest', function (Request $request) {
         'id' => $review->id,
         'rectangles' => $review->rectangles,
         'screenshot_path' => $review->screenshot_path,
+        'iframeWidth' => $review->iframe_width, 
     ]);
 });
