@@ -225,7 +225,7 @@
             });
             renderRectangles();
             notifyParentRectanglesUpdated();
-            console.log(`🗑️ Rectangle ${id} deleted`);
+            console.log(`Rectangle ${id} deleted`);
         }
     };
 
@@ -244,7 +244,7 @@
             rect.comment = comment;
             notifyParentRectanglesUpdated();
             console.log(
-                `💬 Updated comment for rectangle #${rect.index}:`,
+                `Updated comment for rectangle #${rect.index}:`,
                 comment
             );
         }
@@ -298,7 +298,7 @@
             if (rect.comment !== textarea.value) {
                 rect.comment = textarea.value;
                 console.log(
-                    `💬 Comment updated for #${rect.index}:`,
+                    `Comment updated for #${rect.index}:`,
                     rect.comment
                 );
                 notifyParentRectanglesUpdated();
@@ -480,7 +480,7 @@
             focusRectangle(event.data.payload.id);
         } else if (event.data?.type === "loadInitialRectangles") {
             console.log(
-                "📥 Received initial rectangles:",
+                "Received initial rectangles:",
                 event.data.payload?.rectangles?.length || 0
             );
 
@@ -491,7 +491,7 @@
                     index: rect.index || idx + 1,
                 }));
 
-                console.log("📋 Loaded rectangles:", rectangles.length);
+                console.log("Loaded rectangles:", rectangles.length);
                 renderRectangles();
                 notifyParentRectanglesUpdated();
             }

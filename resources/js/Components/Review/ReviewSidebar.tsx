@@ -53,7 +53,7 @@ export default function ReviewSidebar({
         });
 
         timeoutRef.current = setTimeout(() => {
-            console.warn("⏳ Timeout during review capture");
+            console.warn("Timeout during review capture");
             setIsSaving(false);
         }, 15000);
     };
